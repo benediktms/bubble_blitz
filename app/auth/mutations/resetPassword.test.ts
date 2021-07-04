@@ -1,6 +1,7 @@
 import resetPassword from "./resetPassword"
 import db from "db"
 import { hash256, SecurePassword } from "blitz"
+import dayjs from "dayjs"
 
 beforeEach(async () => {
   await db.$reset()
@@ -19,10 +20,8 @@ describe("resetPassword mutation", () => {
     // Create test user
     const goodToken = "randomPasswordResetToken"
     const expiredToken = "expiredRandomPasswordResetToken"
-    const future = new Date()
-    future.setHours(future.getHours() + 4)
-    const past = new Date()
-    past.setHours(past.getHours() - 4)
+    const future = dayjs().add(4, "hours").toDate()
+    const past = dayjs().subtract(4, "hours").toDate()
 
     const user = await db.user.create({
       data: {
