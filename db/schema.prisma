@@ -13,16 +13,33 @@ generator client {
 // --------------------------------------
 
 model User {
-  id             Int      @id @default(autoincrement())
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id             Int       @id @default(autoincrement())
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
   name           String?
-  email          String   @unique
+  email          String    @unique
   hashedPassword String?
-  role           String   @default("USER")
+  role           String    @default("USER")
+  tokens         Token[]
+  sessions       Session[]
+  Bubble         Bubble[]
+  bubbleId       Int?
+}
 
-  tokens   Token[]
-  sessions Session[]
+model Bubble {
+  id        Int        @id @default(autoincrement())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  users     User[]
+  type      BubbleType
+  name      String
+  address   String?
+}
+
+enum BubbleType {
+  FLAT
+  HOUSE
+  TRIP
 }
 
 model Session {
@@ -35,9 +52,8 @@ model Session {
   antiCSRFToken      String?
   publicData         String?
   privateData        String?
-
-  user   User? @relation(fields: [userId], references: [id])
-  userId Int?
+  user               User?     @relation(fields: [userId], references: [id])
+  userId             Int?
 }
 
 model Token {
@@ -48,9 +64,8 @@ model Token {
   type        TokenType
   expiresAt   DateTime
   sentTo      String
-
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
 
   @@unique([hashedToken, type])
 }
