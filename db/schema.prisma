@@ -13,16 +13,53 @@ generator client {
 // --------------------------------------
 
 model User {
-  id             Int      @id @default(autoincrement())
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id             Int       @id @default(autoincrement())
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
   name           String?
-  email          String   @unique
+  email          String    @unique
   hashedPassword String?
-  role           String   @default("USER")
+  role           String    @default("USER")
+  tokens         Token[]
+  sessions       Session[]
+  spaces         Space[]
+  posts          Post[]
+}
 
-  tokens   Token[]
-  sessions Session[]
+model Space {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  users       User[]
+  type        SpaceType
+  name        String
+  address     String?
+  posts       Post[]
+  description String?
+}
+
+enum SpaceType {
+  FLAT
+  HOUSE
+  TRIP
+}
+
+model Post {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  type        PostType
+  title       String
+  description String?
+  Space       Space    @relation(fields: [spaceId], references: [id])
+  spaceId     Int
+  User        User     @relation(fields: [userId], references: [id])
+  userId      Int
+}
+
+enum PostType {
+  TEXT
+  POLL
 }
 
 model Session {
@@ -35,9 +72,8 @@ model Session {
   antiCSRFToken      String?
   publicData         String?
   privateData        String?
-
-  user   User? @relation(fields: [userId], references: [id])
-  userId Int?
+  user               User?     @relation(fields: [userId], references: [id])
+  userId             Int?
 }
 
 model Token {
@@ -48,9 +84,8 @@ model Token {
   type        TokenType
   expiresAt   DateTime
   sentTo      String
-
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
+  user        User      @relation(fields: [userId], references: [id])
+  userId      Int
 
   @@unique([hashedToken, type])
 }

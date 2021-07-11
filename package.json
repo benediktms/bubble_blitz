@@ -7,6 +7,7 @@
     "start": "blitz start",
     "start:production": "blitz start --port $PORT",
     "studio": "blitz prisma studio",
+    "migrate": "blitz prisma migrate dev",
     "lint": "eslint --ignore-path .gitignore --ext .js,.ts,.tsx .",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -25,10 +26,14 @@
     ]
   },
   "dependencies": {
+    "@chakra-ui/react": "1.1.2",
+    "@emotion/react": "11.1.4",
+    "@emotion/styled": "11.0.0",
     "@prisma/client": "2.26.0",
     "blitz": "0.38.2",
     "dayjs": "1.10.5",
     "final-form": "4.20.2",
+    "framer-motion": "3.2.0",
     "react": "alpha",
     "react-dom": "alpha",
     "react-final-form": "6.5.3",
