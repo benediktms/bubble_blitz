@@ -1,48 +1,48 @@
 import { Suspense } from "react"
 import { Head, Link, useRouter, useQuery, useMutation, useParam, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
-import getBubble from "app/bubbles/queries/getBubble"
-import updateBubble from "app/bubbles/mutations/updateBubble"
-import { BubbleForm, FORM_ERROR } from "app/bubbles/components/BubbleForm"
+import getSpace from "app/spaces/queries/getSpace"
+import updateSpace from "app/spaces/mutations/updateSpace"
+import { SpaceForm, FORM_ERROR } from "app/spaces/components/SpaceForm"
 
-export const EditBubble = () => {
+export const EditSpace = () => {
   const router = useRouter()
-  const bubbleId = useParam("bubbleId", "number")
-  const [bubble, { setQueryData }] = useQuery(
-    getBubble,
-    { id: bubbleId },
+  const spaceId = useParam("spaceId", "number")
+  const [space, { setQueryData }] = useQuery(
+    getSpace,
+    { id: spaceId },
     {
       // This ensures the query never refreshes and overwrites the form data while the user is editing.
       staleTime: Infinity,
     }
   )
-  const [updateBubbleMutation] = useMutation(updateBubble)
+  const [updateSpaceMutation] = useMutation(updateSpace)
 
   return (
     <>
       <Head>
-        <title>Edit Bubble {bubble.id}</title>
+        <title>Edit Space {space.id}</title>
       </Head>
 
       <div>
-        <h1>Edit Bubble {bubble.id}</h1>
-        <pre>{JSON.stringify(bubble)}</pre>
+        <h1>Edit Space {space.id}</h1>
+        <pre>{JSON.stringify(space)}</pre>
 
-        <BubbleForm
-          submitText="Update Bubble"
+        <SpaceForm
+          submitText="Update Space"
           // TODO use a zod schema for form validation
           //  - Tip: extract mutation's schema into a shared `validations.ts` file and
           //         then import and use it here
-          // schema={UpdateBubble}
-          initialValues={bubble}
+          // schema={UpdateSpace}
+          initialValues={space}
           onSubmit={async (values) => {
             try {
-              const updated = await updateBubbleMutation({
-                id: bubble.id,
+              const updated = await updateSpaceMutation({
+                id: space.id,
                 ...values,
               })
               await setQueryData(updated)
-              router.push(Routes.ShowBubblePage({ bubbleId: updated.id }))
+              router.push(Routes.ShowSpacePage({ spaceId: updated.id }))
             } catch (error) {
               console.error(error)
               return {
@@ -56,23 +56,23 @@ export const EditBubble = () => {
   )
 }
 
-const EditBubblePage: BlitzPage = () => {
+const EditSpacePage: BlitzPage = () => {
   return (
     <div>
       <Suspense fallback={<div>Loading...</div>}>
-        <EditBubble />
+        <EditSpace />
       </Suspense>
 
       <p>
-        <Link href={Routes.BubblesPage()}>
-          <a>Bubbles</a>
+        <Link href={Routes.SpacesPage()}>
+          <a>Spaces</a>
         </Link>
       </p>
     </div>
   )
 }
 
-EditBubblePage.authenticate = true
-EditBubblePage.getLayout = (page) => <Layout>{page}</Layout>
+EditSpacePage.authenticate = true
+EditSpacePage.getLayout = (page) => <Layout>{page}</Layout>
 
-export default EditBubblePage
+export default EditSpacePage

@@ -1,14 +1,14 @@
 import { Suspense } from "react"
 import { Head, Link, usePaginatedQuery, useRouter, BlitzPage, Routes } from "blitz"
 import Layout from "app/core/layouts/Layout"
-import getBubbles from "app/bubbles/queries/getBubbles"
+import getSpaces from "app/spaces/queries/getSpaces"
 
 const ITEMS_PER_PAGE = 100
 
-export const BubblesList = () => {
+export const SpacesList = () => {
   const router = useRouter()
   const page = Number(router.query.page) || 0
-  const [{ bubbles, hasMore }] = usePaginatedQuery(getBubbles, {
+  const [{ spaces, hasMore }] = usePaginatedQuery(getSpaces, {
     orderBy: { id: "asc" },
     skip: ITEMS_PER_PAGE * page,
     take: ITEMS_PER_PAGE,
@@ -20,10 +20,10 @@ export const BubblesList = () => {
   return (
     <div>
       <ul>
-        {bubbles.map((bubble) => (
-          <li key={bubble.id}>
-            <Link href={Routes.ShowBubblePage({ bubbleId: bubble.id })}>
-              <a>{bubble.name}</a>
+        {spaces.map((space) => (
+          <li key={space.id}>
+            <Link href={Routes.ShowSpacePage({ spaceId: space.id })}>
+              <a>{space.name}</a>
             </Link>
           </li>
         ))}
@@ -39,29 +39,29 @@ export const BubblesList = () => {
   )
 }
 
-const BubblesPage: BlitzPage = () => {
+const SpacesPage: BlitzPage = () => {
   return (
     <>
       <Head>
-        <title>Bubbles</title>
+        <title>Spaces</title>
       </Head>
 
       <div>
         <p>
-          <Link href={Routes.NewBubblePage()}>
-            <a>Create Bubble</a>
+          <Link href={Routes.NewSpacePage()}>
+            <a>Create Space</a>
           </Link>
         </p>
 
         <Suspense fallback={<div>Loading...</div>}>
-          <BubblesList />
+          <SpacesList />
         </Suspense>
       </div>
     </>
   )
 }
 
-BubblesPage.authenticate = true
-BubblesPage.getLayout = (page) => <Layout>{page}</Layout>
+SpacesPage.authenticate = true
+SpacesPage.getLayout = (page) => <Layout>{page}</Layout>
 
-export default BubblesPage
+export default SpacesPage

@@ -3,7 +3,7 @@ import { LabeledTextField } from "app/core/components/LabeledTextField"
 import { z } from "zod"
 export { FORM_ERROR } from "app/core/components/Form"
 
-export function BubbleForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
+export function SpaceForm<S extends z.ZodType<any, any>>(props: FormProps<S>) {
   return (
     <Form<S> {...props}>
       <LabeledTextField name="name" label="Name" placeholder="Name" />

@@ -2,18 +2,18 @@ import { resolver } from "blitz"
 import db from "db"
 import { z } from "zod"
 
-const UpdateBubble = z.object({
+const UpdateSpace = z.object({
   id: z.number(),
   name: z.string(),
 })
 
 export default resolver.pipe(
-  resolver.zod(UpdateBubble),
+  resolver.zod(UpdateSpace),
   resolver.authorize(),
   async ({ id, ...data }) => {
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
-    const bubble = await db.bubble.update({ where: { id }, data })
+    const space = await db.space.update({ where: { id }, data })
 
-    return bubble
+    return space
   }
 )

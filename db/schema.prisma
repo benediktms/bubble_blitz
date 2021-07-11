@@ -22,24 +22,44 @@ model User {
   role           String    @default("USER")
   tokens         Token[]
   sessions       Session[]
-  Bubble         Bubble[]
-  bubbleId       Int?
+  spaces         Space[]
+  posts          Post[]
 }
 
-model Bubble {
-  id        Int        @id @default(autoincrement())
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  users     User[]
-  type      BubbleType
-  name      String
-  address   String?
+model Space {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  users       User[]
+  type        SpaceType
+  name        String
+  address     String?
+  posts       Post[]
+  description String?
 }
 
-enum BubbleType {
+enum SpaceType {
   FLAT
   HOUSE
   TRIP
+}
+
+model Post {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  type        PostType
+  title       String
+  description String?
+  Space       Space    @relation(fields: [spaceId], references: [id])
+  spaceId     Int
+  User        User     @relation(fields: [userId], references: [id])
+  userId      Int
+}
+
+enum PostType {
+  TEXT
+  POLL
 }
 
 model Session {
